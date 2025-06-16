@@ -45,16 +45,22 @@ Now generate 30 words for the topic: "{topic}"
     async def generate_words_and_clues_from_topic(topic: str) -> List[Dict[str, str]]:
         """Generate 30 words with clues in CSV format"""
         config = LLMService.get_config()
+        print(f"🔧 LLM_PROVIDER: {config['provider']}")
         
         try:
             if config["provider"] == "openai" and config["openai_api_key"]:
+                print(f"🚀 Using OpenAI for topic: {topic}")
                 return await LLMService._call_openai(topic, config)
             elif config["provider"] == "anthropic" and config["anthropic_api_key"]:
+                print(f"🚀 Using Anthropic for topic: {topic}")
                 return await LLMService._call_anthropic(topic, config)
             elif config["provider"] == "ollama":
+                print(f"🚀 Using Ollama for topic: {topic}")
                 return await LLMService._call_ollama(topic, config)
+            else:
+                print(f"⚠️  No valid LLM provider configured. Provider: {config['provider']}, Has API keys: OpenAI={bool(config['openai_api_key'])}, Anthropic={bool(config['anthropic_api_key'])}")
         except Exception as e:
-            print(f"LLM call failed: {e}")
+            print(f"❌ LLM call failed: {e}")
         
         # Fallback to mock data
         return LLMService._get_mock_words(topic)
@@ -141,6 +147,7 @@ Now generate 30 words for the topic: "{topic}"
     @staticmethod
     def _get_mock_words(topic: str) -> List[Dict[str, str]]:
         """Comprehensive fallback with topic-specific data"""
+        print(f"⚠️  Using MOCK data for topic '{topic}' - LLM_PROVIDER is set to 'mock' or LLM call failed")
         
         topic_words = {
             "basketball": [

@@ -80,6 +80,10 @@ Now generate 30 words for the topic: "{topic}"
         )
         
         content = response.choices[0].message.content
+        print(f"📋 OpenAI response for '{topic}':")
+        print(f"{content}")
+        print(f"📋 End of OpenAI response")
+        
         return LLMService._parse_csv_response(content)
     
     @staticmethod
@@ -88,15 +92,18 @@ Now generate 30 words for the topic: "{topic}"
         client = anthropic.AsyncAnthropic(api_key=config["anthropic_api_key"])
         
         response = await client.messages.create(
-            model="claude-3-haiku-20240307",
-            max_tokens=2000,
-            temperature=0.7,
+            model="claude-opus-4-20250514",
+            max_tokens=4000,
             messages=[
                 {"role": "user", "content": LLMService.create_prompt(topic)}
             ]
         )
         
         content = response.content[0].text
+        print(f"📋 Anthropic response for '{topic}':")
+        print(f"{content}")
+        print(f"📋 End of Anthropic response")
+        
         return LLMService._parse_csv_response(content)
     
     @staticmethod

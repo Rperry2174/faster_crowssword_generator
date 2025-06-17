@@ -98,27 +98,4 @@ describe('API Base URL Construction', () => {
     restoreEnv();
   });
 
-  test('should respect REACT_APP_BACKEND_URL environment variable', async () => {
-    const originalBackendUrl = process.env.REACT_APP_BACKEND_URL;
-    process.env.REACT_APP_BACKEND_URL = 'https://custom-backend.com';
-    
-    const restoreEnv = mockNodeEnv('production');
-    mockLocation('/crossword-bad-prompt/some-page');
-
-    // Mock fetch to capture the URL
-    const fetchSpy = jest.spyOn(global, 'fetch').mockResolvedValue(
-      new Response('{"success": true}', { status: 200 })
-    );
-
-    // Re-import to get fresh API_BASE_URL
-    const { apiService } = await import('../services/api');
-
-    await apiService.healthCheck();
-
-    expect(fetchSpy).toHaveBeenCalledWith('https://custom-backend.com/health', expect.any(Object));
-
-    fetchSpy.mockRestore();
-    restoreEnv();
-    process.env.REACT_APP_BACKEND_URL = originalBackendUrl;
-  });
 });

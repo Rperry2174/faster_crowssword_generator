@@ -2,24 +2,19 @@ import { GenerateWordsResponse, GenerateCrosswordResponse, CluesResponse } from 
 
 // API base URL - detects subpath and uses correct /api prefix
 const getApiBaseUrl = (): string => {
-  // Check for explicit backend URL override first
-  if (process.env.REACT_APP_BACKEND_URL) {
-    return process.env.REACT_APP_BACKEND_URL;
-  }
-
   if (process.env.NODE_ENV !== 'production') {
     return 'http://localhost:8000';
   }
-
+  
   // In production, detect if we're running at a subpath
   const currentPath = window.location.pathname;
   const basePath = currentPath.split('/').slice(0, -1).join('/') || '';
-
+  
   // If we have a subpath (like /crossword-bad-prompt), use it
   if (basePath && basePath !== '') {
     return `${basePath}/api`;
   }
-
+  
   // Default to /api for root deployments
   return '/api';
 };
